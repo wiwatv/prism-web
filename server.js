@@ -161,7 +161,8 @@ app.post('/api/check-syntax', (req, res) => {
 
   const { execFile } = require('child_process');
   const useShell = process.platform === 'win32';
-  activePrismProcess = execFile(prismPath, args, { cwd: prismDir, shell: useShell }, (error, stdout, stderr) => {
+  const command = useShell ? `"${prismPath}"` : prismPath;
+  activePrismProcess = execFile(command, args, { cwd: prismDir, shell: useShell }, (error, stdout, stderr) => {
     activePrismProcess = null; // Clear process tracking
     
     if (error) {
@@ -244,7 +245,8 @@ app.post('/api/verify', (req, res) => {
 
   const { execFile } = require('child_process');
   const useShell = process.platform === 'win32';
-  activePrismProcess = execFile(prismPath, args, { cwd: prismDir, shell: useShell }, (error, stdout, stderr) => {
+  const command = useShell ? `"${prismPath}"` : prismPath;
+  activePrismProcess = execFile(command, args, { cwd: prismDir, shell: useShell }, (error, stdout, stderr) => {
     activePrismProcess = null; // Clear process tracking
     
     // Clean up temp props file

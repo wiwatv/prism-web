@@ -172,12 +172,12 @@ export default function App() {
         alert('Syntax check passed successfully!');
         setCmdOutput(data.stdout || '');
       } else {
-        alert('Syntax Error:\n' + data.error);
-        setCmdOutput(data.stdout || '');
+        setResults([{ error: 'Syntax Error', details: data.error, stderr: data.stdout }]);
+        setCmdOutput(data.cmd || '');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert('Network error connecting to syntax check API');
+      setResults([{ error: 'Network Error', details: err.message, stderr: '' }]);
     }
     setIsLoading(false);
   };
@@ -210,12 +210,12 @@ export default function App() {
         setResults(data.results || []);
         setCmdOutput(data.cmd || '');
       } else {
-        alert('Verification failed: ' + data.error);
-        console.error(data);
+        setResults([{ error: data.error, details: data.details, stderr: data.stderr }]);
+        setCmdOutput(data.cmd || '');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert('Network error connecting to verify API');
+      setResults([{ error: 'Network Error', details: err.message, stderr: '' }]);
     }
     setIsLoading(false);
   };
@@ -522,6 +522,14 @@ export default function App() {
               results[0].result === 'Cancelled' ? (
                 <div style={{ display: 'flex', flexDirection: 'column', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
                   <span style={{ fontSize: '1.2rem', color: 'var(--danger)', marginBottom: '8px' }}>Process Cancelled</span>
+                </div>
+              ) : results[0].error ? (
+                <div style={{ display: 'flex', flexDirection: 'column', height: '100%', alignItems: 'flex-start', justifyContent: 'flex-start', padding: '10px', overflowY: 'auto', width: '100%' }}>
+                  <span style={{ fontSize: '1.1rem', color: 'var(--danger)', marginBottom: '12px', fontWeight: 'bold' }}>{results[0].error}</span>
+                  <div style={{ width: '100%', padding: '12px', backgroundColor: 'rgba(0,0,0,0.3)', borderRadius: '6px', fontSize: '0.85rem', color: '#ef4444', whiteSpace: 'pre-wrap', fontFamily: 'monospace', textAlign: 'left', flex: 1, overflowY: 'auto' }}>
+                    {results[0].details && <div style={{marginBottom: '8px'}}>{results[0].details}</div>}
+                    {results[0].stderr && <div style={{color: '#f8fafc'}}>Output/Stderr:\n{results[0].stderr}</div>}
+                  </div>
                 </div>
               ) : results.length === 1 || verificationMode === 'fixed' ? (
                 <div style={{ display: 'flex', flexDirection: 'column', height: '100%', alignItems: 'center', justifyContent: 'center' }}>

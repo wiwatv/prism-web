@@ -1,0 +1,14 @@
+{
+  "verificationMode": "sweep",
+  "constants": "",
+  "param": "MAX_BUFFER",
+  "startVal": "1",
+  "endVal": "100",
+  "stepVal": "1",
+  "useParam2": true,
+  "param2": "t",
+  "startVal2": "1",
+  "endVal2": "10",
+  "stepVal2": "1",
+  "prismPath": "C:\\Program Files\\prism-4.8.1\\bin\\prism.bat"
+}

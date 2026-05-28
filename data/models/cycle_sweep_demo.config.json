@@ -1,0 +1,14 @@
+{
+  "verificationMode": "sweep",
+  "constants": "",
+  "param": "cycle",
+  "startVal": "1",
+  "endVal": "70",
+  "stepVal": "1",
+  "useParam2": false,
+  "param2": "fail_prob",
+  "startVal2": "0.1",
+  "endVal2": "0.3",
+  "stepVal2": "0.1",
+  "prismPath": "C:\\Program Files\\prism-4.8.1\\bin\\prism.bat"
+}

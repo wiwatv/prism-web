@@ -1,0 +1,35 @@
+pta
+
+// Machine Repair PTA Model
+// Parameters for sweeping
+const double r=0.5; // repair success probability 
+const double fail_prob=0.1; // chance it starts failing
+const int cycle; // sweeping
+
+module Machine
+    // 0 = working perfectly
+    // 1 = starting to fail (repair window open)
+    // 2 = completely broken
+    state : [0..2] init 0; 
+    
+    // Clock to track time in states
+    c : clock;
+
+    // Time constraints for states
+    invariant 
+        (state=0 => c<=10) & // Can stay working for up to 10 time units
+        (state=1 => c<=3)    // Must attempt repair within 3 time units
+    endinvariant
+
+    // While working, there is a chance to start failing
+    [operate] state=0 & c>=5 -> (1-fail_prob):(state'=0)&(c'=0) + fail_prob:(state'=1)&(c'=0);
+    
+    // When failing, a repair is attempted. It either succeeds (back to 0) or fails (breaks)
+    [repair] state=1 & c>=1 -> r:(state'=0)&(c'=0) + (1-r):(state'=2)&(c'=0);
+    
+    // Once broken, it stays broken
+    [broken] state=2 -> 1.0:(state'=2);
+
+endmodule
+
+//verify ว่า Pmax ของกรณี completely broken มีค่าเท่าไร ถ้าเรา sweep cycle

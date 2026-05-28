@@ -160,7 +160,7 @@ app.post('/api/check-syntax', (req, res) => {
   console.log(`Executing Syntax Check in ${prismDir}: ${prismExe} ${args.join(' ')}`);
 
   const { execFile } = require('child_process');
-  activePrismProcess = execFile(prismExe, args, { cwd: prismDir, shell: true }, (error, stdout, stderr) => {
+  activePrismProcess = execFile(`"${prismPath}"`, args, { cwd: prismDir, shell: true }, (error, stdout, stderr) => {
     activePrismProcess = null; // Clear process tracking
     
     if (error) {
@@ -242,7 +242,7 @@ app.post('/api/verify', (req, res) => {
   console.log(`Executing in ${prismDir}: ${prismExe} ${args.join(' ')}`);
 
   const { execFile } = require('child_process');
-  activePrismProcess = execFile(prismExe, args, { cwd: prismDir, shell: true }, (error, stdout, stderr) => {
+  activePrismProcess = execFile(`"${prismPath}"`, args, { cwd: prismDir, shell: true }, (error, stdout, stderr) => {
     activePrismProcess = null; // Clear process tracking
     
     // Clean up temp props file

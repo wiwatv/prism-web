@@ -10,5 +10,5 @@
   "startVal2": "1",
   "endVal2": "10",
   "stepVal2": "1",
-  "prismPath": "C:\\Program Files\\prism-4.8.1\\bin\\prism.bat"
+  "prismPath": "/opt/prism/bin/prism"
 }

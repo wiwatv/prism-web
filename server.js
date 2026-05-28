@@ -161,7 +161,14 @@ app.post('/api/check-syntax', (req, res) => {
 
   const { execFile } = require('child_process');
   const useShell = process.platform === 'win32';
-  const command = useShell ? `"${prismPath}"` : prismPath;
+  
+  // Smart fallback: if on Linux but the path looks like Windows (e.g. C:\), use default Linux path
+  let finalPrismPath = prismPath;
+  if (!useShell && prismPath.includes(':\\')) {
+    finalPrismPath = '/opt/prism/bin/prism';
+  }
+  
+  const command = useShell ? `"${finalPrismPath}"` : finalPrismPath;
   activePrismProcess = execFile(command, args, { cwd: prismDir, shell: useShell }, (error, stdout, stderr) => {
     activePrismProcess = null; // Clear process tracking
     
@@ -245,7 +252,14 @@ app.post('/api/verify', (req, res) => {
 
   const { execFile } = require('child_process');
   const useShell = process.platform === 'win32';
-  const command = useShell ? `"${prismPath}"` : prismPath;
+  
+  // Smart fallback: if on Linux but the path looks like Windows (e.g. C:\), use default Linux path
+  let finalPrismPath = prismPath;
+  if (!useShell && prismPath.includes(':\\')) {
+    finalPrismPath = '/opt/prism/bin/prism';
+  }
+
+  const command = useShell ? `"${finalPrismPath}"` : finalPrismPath;
   activePrismProcess = execFile(command, args, { cwd: prismDir, shell: useShell }, (error, stdout, stderr) => {
     activePrismProcess = null; // Clear process tracking
     

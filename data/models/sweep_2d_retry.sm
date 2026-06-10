@@ -1,0 +1,35 @@
+dtmc
+
+// แบบจำลอง Network Transmission รองรับการทำ 2D Parameter Sweep
+
+// ตัวแปรที่ 1: ความน่าจะเป็นที่แพ็กเกจข้อมูลจะสูญหายในแต่ละครั้ง
+const double p_fail;
+
+// ตัวแปรที่ 2: จำนวนครั้งสูงสุดที่ระบบยอมให้ส่งซ้ำ (รองรับ 0 ถึง 10 ครั้ง)
+const int MAX_RETRY;
+
+module Transmission
+    // สถานะหลักของระบบ
+    // 0 = กำลังพยายามส่งข้อมูล
+    // 1 = ส่งสำเร็จแล้ว
+    // 2 = ล้มเหลวอย่างสมบูรณ์ (โควตา Retry หมด)
+    state : [0..2] init 0;
+    
+    // ตัวนับจำนวนครั้งที่ส่งล้มเหลวไปแล้ว
+    retries : [0..10] init 0;
+
+    // จังหวะการส่งข้อมูล (เมื่อยังมีโควตา Retry เหลืออยู่)
+    [send] state=0 & retries < MAX_RETRY -> 
+        (1-p_fail) : (state'=1) +                  // ส่งสำเร็จ -> ไปสถานะ 1
+        p_fail : (retries'=retries+1);             // ส่งล้มเหลว -> นับ retries เพิ่ม 1
+        
+    // จังหวะการส่งข้อมูลครั้งสุดท้าย (โควตา Retry รอบสุดท้าย)
+    [send_last] state=0 & retries = MAX_RETRY -> 
+        (1-p_fail) : (state'=1) +                  // ส่งสำเร็จ -> ไปสถานะ 1
+        p_fail : (state'=2);                       // ส่งล้มเหลว -> ไปสถานะ 2 (พังสมบูรณ์)
+
+    // สถานะจุดจบ (Absorbing states)
+    [done_success] state=1 -> 1.0 : (state'=1);
+    [done_dropped] state=2 -> 1.0 : (state'=2);
+endmodule
+//หา prob ของการส่งสำเร็จ sweep ตาม p_fail และ Retry

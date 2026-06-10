@@ -1,0 +1,28 @@
+pta
+
+// Parameters for sweeping in the UI (only ONE can be undefined for sweeping!)
+const double p=0.5; 
+const double q=0.5;
+
+module M
+    // s represents the state of the system
+    s : [0..2] init 0; 
+    
+    // x is a continuous time clock
+    x : clock;         
+
+    // Invariants restrict how long the system can stay in a location
+    invariant 
+        (s=0 => x<=2) & 
+        (s=2 => x<=3) 
+    endinvariant
+
+    // Transitions with probabilistic choice and clock resets
+    // 'p' is the probability of success on first try
+    [send] s=0 & x>=1 -> p:(s'=1)&(x'=0) + (1-p):(s'=2)&(x'=0);
+    
+    // Retry state
+    // 'q' is the probability of success on retry
+    [retry] s=2 & x>=2 -> q:(s'=1) + (1-q):(s'=2)&(x'=0);
+
+endmodule

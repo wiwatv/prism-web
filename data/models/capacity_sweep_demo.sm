@@ -1,0 +1,47 @@
+dtmc
+
+// แบบจำลองคิวรับส่งข้อมูล (Queue/Buffer System)
+// สาธิตการทำ Capacity Sweep (การวิเคราะห์ขนาดของระบบ)
+
+// ตัวแปรที่เราจะทำ Parameter Sweep คือขนาดของ Buffer
+// (เราสร้างคิวรองรับได้ 20 ดังนั้นห้าม Sweep เกิน 20 นะครับ)
+const int MAX_BUFFER;
+const int t; //หน่วยนาที
+
+// ความน่าจะเป็นที่ข้อมูลจะเข้ามาในแต่ละรอบ (40%)
+const double p_arrive = 0.4;
+// ความน่าจะเป็นที่ระบบจะระบายข้อมูลออกไปได้ในแต่ละรอบ (60%)
+const double p_process = 0.6;
+
+module QueueSystem
+    // จำนวนข้อมูลที่รออยู่ในคิว
+    q : [0..20] init 0;
+    
+    // สถานะว่าคิวล้นหรือไม่
+    // 0 = ปกติ
+    // 1 = คิวล้น (Overflow)
+    overflow : [0..1] init 0;
+
+    // 1) กรณีคิวว่าง (q=0): ประมวลผลออกไม่ได้ มีแค่ลุ้นว่าข้อมูลจะเข้าหรือไม่
+    [] q=0 & overflow=0 ->
+        p_arrive : (q'=1) +
+        (1-p_arrive) : (q'=0);
+
+    // 2) กรณีคิวมีข้อมูล (0 < q < MAX_BUFFER): ลุ้นทั้งเข้าและออกพร้อมกัน
+    [] q>0 & q<MAX_BUFFER & overflow=0 ->
+        (p_arrive * (1-p_process)) : (q'=q+1) +     // เข้าอย่างเดียว
+        ((1-p_arrive) * p_process) : (q'=q-1) +     // ออกอย่างเดียว
+        ((p_arrive * p_process) + ((1-p_arrive)*(1-p_process))) : (q'=q); // เจ๊ากัน หรือไม่เกิดอะไรขึ้น
+
+    // 3) กรณีคิวเต็มขีดจำกัด (q=MAX_BUFFER):
+    // ถ้ามีข้อมูลเข้ามาใหม่โดยที่ระบายออกไม่ทัน จะเกิด Overflow ทันที
+    [] q=MAX_BUFFER & overflow=0 ->
+        (p_arrive * (1-p_process)) : (overflow'=1) +
+        ((1-p_arrive) * p_process) : (q'=q-1) +
+        ((p_arrive * p_process) + ((1-p_arrive)*(1-p_process))) : (q'=q);
+
+    // สถานะจุดจบ เมื่อคิวล้นแล้ว ให้แช่ไว้ที่เดิมเพื่อให้ PRISM ตรวจจับได้
+    [done] overflow=1 -> 1.0 : (overflow'=1);
+endmodule
+
+// verify ว่า ขนาด MAX_BUFFER ควรมากเท่าไร จึงจะไม่เกิด overflow=1 ภายใน t รอบการทำงาน

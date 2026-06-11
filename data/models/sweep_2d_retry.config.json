@@ -8,7 +8,9 @@
   "useParam2": true,
   "param2": "MAX_RETRY",
   "startVal2": "1",
-  "endVal2": "10",
+  "endVal2": "2",
   "stepVal2": "1",
-  "prismPath": "/opt/prism/bin/prism"
+  "prismPath": "/opt/prism/bin/prism",
+  "engine": "auto",
+  "simSteps": "20"
 }

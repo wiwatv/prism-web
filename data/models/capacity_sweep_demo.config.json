@@ -1,14 +1,16 @@
 {
-  "verificationMode": "sweep",
+  "verificationMode": "simulate",
   "constants": "",
   "param": "MAX_BUFFER",
   "startVal": "1",
-  "endVal": "10",
+  "endVal": "20",
   "stepVal": "1",
   "useParam2": true,
   "param2": "t",
   "startVal2": "1",
   "endVal2": "10",
   "stepVal2": "1",
-  "prismPath": "/opt/prism/bin/prism"
+  "prismPath": "/opt/prism/bin/prism",
+  "engine": "auto",
+  "simSteps": "30"
 }

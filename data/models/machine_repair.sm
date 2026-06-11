@@ -1,9 +1,20 @@
+// =========================================================
+// ภาพรวมโจทย์ (Overview): แบบจำลองการซ่อมบำรุงเครื่องจักร (Machine Repair PTA)
+// แบบจำลองนี้ใช้ศึกษาโอกาสที่เครื่องจักรจะพังอย่างสมบูรณ์ โดยใช้เวลาจริง (Continuous Time)
+// เครื่องจักรทำงานปกติได้สูงสุด 10 นาที และมีโอกาสขัดข้อง (fail_prob) 
+// หากขัดข้อง จะมีเวลา 3 นาทีในการซ่อมให้เสร็จ โดยมีโอกาสซ่อมสำเร็จ (r) 
+// เหมาะกับการทำ Parameter Sweep ตัวแปร fail_prob หรือ r 
+//
+// 🎯 คำแนะนำการกำหนด PCTL (Properties):
+// Pmax=? [ F<=cycle state=2 ]
+// ความหมาย: "โอกาสสูงสุด (Maximum Probability) ที่เครื่องจักรจะพังอย่างสมบูรณ์ (state=2) ภายในกรอบเวลา cycle นาที เป็นเท่าไร?"
+// =========================================================
 pta
 
 // Machine Repair PTA Model
 // Parameters for sweeping
 const double r=0.5; // repair success probability 
-const double fail_prob=0.1; // chance it starts failing
+const double fail_prob; // chance it starts failing
 const int cycle; // sweeping
 
 module Machine

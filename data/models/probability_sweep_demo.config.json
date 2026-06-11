@@ -1,5 +1,5 @@
 {
-  "verificationMode": "sweep",
+  "verificationMode": "simulate",
   "constants": "",
   "param": "p_fail",
   "startVal": "0.1",
@@ -10,5 +10,7 @@
   "startVal2": "0.1",
   "endVal2": "0.3",
   "stepVal2": "0.1",
-  "prismPath": "/opt/prism/bin/prism"
+  "prismPath": "/opt/prism/bin/prism",
+  "engine": "auto",
+  "simSteps": "20"
 }
